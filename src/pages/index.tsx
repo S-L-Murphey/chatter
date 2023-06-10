@@ -6,11 +6,22 @@ import Image from "next/image";
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { LoadingPage } from "~/components/loading";
+import { useState } from "react";
 
 dayjs.extend(relativeTime)
 
 const CreatePost = () => {
   const { user } = useUser();
+  const [input, setInput] = useState('');
+
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isPosting } = api.posts.createPost.useMutation({
+    onSuccess: () => {
+      setInput("");
+      ctx.posts.getAll.invalidate();
+    }
+  });
 
   if (!user) return <div>No user logged in...</div>
 
@@ -18,7 +29,14 @@ const CreatePost = () => {
     <div className="flex gap-3 w-full">
       <Image src={user.profileImageUrl} width={84}
         height={84} alt="Profile Image" className="rounded-full" />
-      <input placeholder="Send a chat!" className="bg-transparent grow outline-none" />
+      <input
+        placeholder="Send a chat!"
+        className="bg-transparent grow outline-none"
+        value = {input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={isPosting}
+      />
+      <button onClick={() => mutate({ content: input })}>Post</button>
     </div>
   )
 };
@@ -50,7 +68,7 @@ const Feed = () => {
 
   return (
     <div className="flex flex-col text-slate-400">
-      {data?.map((fullPost) => (<PostView {...fullPost} key={fullPost.post.id} />
+      {data.map((fullPost) => (<PostView {...fullPost} key={fullPost.post.id} />
       ))}
     </div>
   )
