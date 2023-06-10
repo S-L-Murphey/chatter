@@ -5,6 +5,7 @@ import { RouterOutputs, api } from "~/utils/api";
 import Image from "next/image";
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
+import { LoadingPage } from "~/components/loading";
 
 dayjs.extend(relativeTime)
 
@@ -38,25 +39,30 @@ const PostView = (props: PostWithUser) => {
 
     </div>
   )
+};
+
+const Feed = () => {
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+
+  if (postsLoading) return <LoadingPage />
+
+  if (!data) return <div>Something went wrong...</div>
+
+  return (
+    <div className="flex flex-col text-slate-400">
+      {data?.map((fullPost) => (<PostView {...fullPost} key={fullPost.post.id} />
+      ))}
+    </div>
+  )
 }
 
 const Home: NextPage = () => {
+  const { isLoaded: userLoaded, isSignedIn } = useUser();
 
-  const user = useUser();
+  // Only using this to make sure this fetches early
+  api.posts.getAll.useQuery();
 
-  const { data, isLoading } = api.posts.getAll.useQuery();
-
-  if (isLoading) return <div className="flex justify-center items-center h-screen">
-    <div className="text-slate-400">
-      Loading...
-    </div>
-  </div>;
-
-  if (!data) return <div className="flex justify-center items-center h-screen">
-    <div className="text-slate-400">
-      Something went wrong...
-    </div>
-  </div>;
+  if (!userLoaded) return <div />
 
   return (
     <>
@@ -67,11 +73,9 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex justify-center h-screen">
         <div className="h-full w-full md:max-w-2xl border-x border-stone-500">
-          <div className="flex border-b border-stone-500 text-slate-300 p-4">{!user.isSignedIn && <div className="flex justify-center"><SignInButton /></div>}{user.isSignedIn && <CreatePost />}</div>
-          <div className="flex flex-col text-slate-400">
-            {data?.map((fullPost) => (<PostView {...fullPost} key={fullPost.post.id} />
-            ))}
+          <div className="flex border-b border-stone-500 text-slate-300 p-4">{!isSignedIn && <div className="flex justify-center"><SignInButton /></div>}{isSignedIn && <CreatePost />}
           </div>
+          <Feed />
         </div>
       </main>
     </>
