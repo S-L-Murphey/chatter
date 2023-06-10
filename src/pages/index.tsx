@@ -1,7 +1,44 @@
-import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { api } from "~/utils/api";
+import { RouterOutputs, api } from "~/utils/api";
+import Image from "next/image";
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+
+dayjs.extend(relativeTime)
+
+const CreatePost = () => {
+  const { user } = useUser();
+
+  if (!user) return <div>No user logged in...</div>
+
+  return (
+    <div className="flex gap-3 w-full">
+      <Image src={user.profileImageUrl} width={84}
+        height={84} alt="Profile Image" className="rounded-full" />
+      <input placeholder="Send a chat!" className="bg-transparent grow outline-none" />
+    </div>
+  )
+};
+
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number]
+
+const PostView = (props: PostWithUser) => {
+  const { post, author } = props;
+  return (
+    <div key={post.id} className="p-4 border-b border-stone-500 flex gap-3">
+      <Image src={author.profileImageUrl} width={48}
+        height={48} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
+      <div className="flex flex-col">
+        <div className="flex gap-1"><span className="text-slate-200">{`@${author.username}`}</span><span className="font-thin">{` · ${dayjs(post.createdAt).fromNow()}`}</span></div>
+        <span>{post.content}</span>
+      </div>
+
+    </div>
+  )
+}
 
 const Home: NextPage = () => {
 
@@ -30,9 +67,9 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex justify-center h-screen">
         <div className="h-full w-full md:max-w-2xl border-x border-stone-500">
-          <div className="flex border-b border-stone-500 text-slate-300 p-4">{!user.isSignedIn && <div className="flex justify-center"><SignInButton /></div>}{!!user.isSignedIn && <SignOutButton />}</div>
+          <div className="flex border-b border-stone-500 text-slate-300 p-4">{!user.isSignedIn && <div className="flex justify-center"><SignInButton /></div>}{user.isSignedIn && <CreatePost />}</div>
           <div className="flex flex-col text-slate-400">
-            {data?.map((post) => (<div key={post.id} className="p-8  border-b border-stone-500">{post.content}</div>
+            {data?.map((fullPost) => (<PostView {...fullPost} key={fullPost.post.id} />
             ))}
           </div>
         </div>
