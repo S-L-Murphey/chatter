@@ -2,12 +2,12 @@ name: CI
 
 on: [push, pull_request]
 
+env:
+  DATABASE_URL: "https://fake.com"
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
-     env:
-      DATABASE_URL: "https://fake.com"
 
     steps:
       - name: Checkout code
