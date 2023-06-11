@@ -3,5 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply bg-black text-stone-200
+    @apply bg-black text-stone-200;
+
+    overscroll-behavior: none;
 }
