@@ -3,21 +3,24 @@ import { type NextPage } from "next";
 import { api } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
+import { useForm, SubmitHandler, useController } from "react-hook-form";
+import { Post } from "@prisma/client";
 
 const CreatePost = () => {
   const { user } = useUser();
-  // TODO: gut all this and implement zod react hook form
-  const [input, setInput] = useState('');
+
+  const { register, handleSubmit, watch, formState: { errors }, reset, control } = useForm<Post>();
+
+  const { field } = useController({name: "content", control})
 
   const ctx = api.useContext();
 
   const { mutate, isLoading: isPosting } = api.posts.createPost.useMutation({
     onSuccess: () => {
-      setInput("");
+      reset({ content: '' })
       void ctx.posts.getAll.invalidate();
     },
     onError: (e) => {
@@ -32,33 +35,30 @@ const CreatePost = () => {
     }
   });
 
+  console.log(field.value)
+
+  const onSubmit: SubmitHandler<Post> = data => mutate({ content: data.content });
+
   if (!user) return <div>No user logged in...</div>
 
   return (
     <div className="flex gap-3 w-full">
       <Image src={user.profileImageUrl} width={84}
         height={84} alt="Profile Image" className="rounded-full" />
-      <input
-        placeholder="Send a chat!"
-        className="bg-transparent grow outline-none"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (input !== "") {
-              mutate({ content: input });
-            }
-          }
-        }}
-        disabled={isPosting}
-      />
-      {input !== "" && !isPosting && (<button onClick={() => mutate({ content: input })}>Post</button>
-      )}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex w-full">
+        <input
+          placeholder="Send a chat!"
+          className="bg-transparent grow outline-none"
+          {...register("content")}
+          disabled={isPosting}
+        />
 
-      {isPosting && <div className="flex justify-center items-center">
-        <LoadingSpinner size={20} />
-      </div>}
+        {field.value !== "" && !isPosting && (<button type="submit">Post</button>)}
+
+        {isPosting && <div className="flex justify-center items-center">
+          <LoadingSpinner size={20} />
+        </div>}
+      </form>
     </div>
   )
 };
