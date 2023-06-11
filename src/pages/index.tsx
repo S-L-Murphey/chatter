@@ -8,12 +8,14 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 
 dayjs.extend(relativeTime)
 
 const CreatePost = () => {
   const { user } = useUser();
+  // TODO: gut all this and implement zod react hook form
   const [input, setInput] = useState('');
 
   const ctx = api.useContext();
@@ -22,7 +24,7 @@ const CreatePost = () => {
     onSuccess: () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
-    }, 
+    },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
 
@@ -31,7 +33,7 @@ const CreatePost = () => {
       } else {
         toast.error("Failed to post! Too many characters.")
       }
-      
+
     }
   });
 
@@ -44,24 +46,24 @@ const CreatePost = () => {
       <input
         placeholder="Send a chat!"
         className="bg-transparent grow outline-none"
-        value = {input}
+        value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
             if (input !== "") {
-              mutate({content: input});
+              mutate({ content: input });
             }
           }
         }}
         disabled={isPosting}
       />
-      {input !== ""  && !isPosting && (<button onClick={() => mutate({ content: input })}>Post</button>
+      {input !== "" && !isPosting && (<button onClick={() => mutate({ content: input })}>Post</button>
       )}
 
       {isPosting && <div className="flex justify-center items-center">
-        <LoadingSpinner size={20}/>
-        </div>}
+        <LoadingSpinner size={20} />
+      </div>}
     </div>
   )
 };
@@ -76,7 +78,13 @@ const PostView = (props: PostWithUser) => {
       <Image src={author.profileImageUrl} width={48}
         height={48} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
       <div className="flex flex-col">
-        <div className="flex gap-1"><span className="text-slate-200">{`@${author.username}`}</span><span className="font-thin">{` · ${dayjs(post.createdAt).fromNow()}`}</span></div>
+        <div className="flex gap-1"><Link href={`/@${author.username}`}>
+          <span className="text-slate-200">{`@${author.username}`}</span>
+        </Link>
+          <Link href={`/post/${post.id}`}>
+            <span className="font-thin">{` · ${dayjs(post.createdAt).fromNow()}`}</span>
+          </Link>
+        </div>
         <span>{post.content}</span>
       </div>
 
