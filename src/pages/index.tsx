@@ -35,8 +35,6 @@ const CreatePost = () => {
     }
   });
 
-  console.log(field.value)
-
   const onSubmit: SubmitHandler<Post> = data => mutate({ content: data.content });
 
   if (!user) return <div>No user logged in...</div>

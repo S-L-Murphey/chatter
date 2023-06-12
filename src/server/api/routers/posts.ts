@@ -105,4 +105,29 @@ export const postsRouter = createTRPCRouter({
 
       return post;
     }),
+
+  deletePost: privateProcedure
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.delete({
+        where: {
+          id: input.id
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Post with that ID not found',
+        });
+      }
+
+
+      return post;
+    })
+
 });
