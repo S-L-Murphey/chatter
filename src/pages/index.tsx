@@ -6,13 +6,13 @@ import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { toast } from "react-hot-toast";
 import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
-import { useForm, SubmitHandler, useController } from "react-hook-form";
+import { useForm, type SubmitHandler, useController } from "react-hook-form";
 import { Post } from "@prisma/client";
 
 const CreatePost = () => {
   const { user } = useUser();
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, control } = useForm<Post>();
+  const { register, handleSubmit, reset, control } = useForm<Post>();
 
   const { field } = useController({name: "content", control})
 
