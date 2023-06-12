@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import { useForm, type SubmitHandler, useController } from "react-hook-form";
-import { Post } from "@prisma/client";
+import type { Post } from "@prisma/client";
 
 const CreatePost = () => {
   const { user } = useUser();
