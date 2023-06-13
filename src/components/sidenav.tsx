@@ -38,13 +38,13 @@ const NAVIGATION_ITEMS = [
 
 export const SideNav = () => {
     return (
-        <section className="fixed w-[275px] flex flex-col h-screen items-stretch pr-10 pt-2">
+        <section className="fixed w-72 flex flex-col h-screen items-stretch pr-12 pt-2">
             <Link href="/" className="p-2 py-2 px-6 text-2xl flex">
                 <BugAntIcon className="h-8 w-8" /><span></span>
             </Link>
             <div className="flex flex-col items-stretch h-full space-y-4 mt-4">
                 {NAVIGATION_ITEMS.map((item) => (
-                    <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-6 flex justify-start w-fit items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
+                    <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 flex items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
                         <div className="h-5 w-5">
                             <item.Icon />
                         </div>
@@ -55,7 +55,7 @@ export const SideNav = () => {
                     </Link>
 
                 ))}
-                <button className="w-full rounded-full text-2xl font-bold text-center bg-teal-500 m-4 px-6 py-2 hover:bg-teal-400 text-slate-700 transition duration-200">Chat</button>
+                <button className="w-full rounded-full text-slate-700 text-2xl font-bold text-center bg-teal-500 m-4 py-2 hover:bg-teal-400 transition duration-200">Chat</button>
                 <div className="absolute inset-x-0 bottom-0 pb-5"><UserInfoButton /></div>
             </div>
         </section>
