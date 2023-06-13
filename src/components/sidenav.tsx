@@ -64,8 +64,9 @@ export const SideNav = () => {
 
 const UserInfoButton = () => {
     const { user } = useUser();
+    const username = user?.username ?? "";
 
-    const { data } = api.profile.getUserByUsername.useQuery({ username: user?.username! })
+    const { data } = api.profile.getUserByUsername.useQuery({ username })
 
     if (!data || !data.username) return <div>No Data</div>
 
