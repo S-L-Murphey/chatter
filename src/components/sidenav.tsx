@@ -35,9 +35,9 @@ const NAVIGATION_ITEMS = [
 
 export const SideNav = () => {
     return (
-        <section className="fixed w-[275px] flex flex-col h-screen items-stretch ">
+        <section className="fixed w-[275px] flex flex-col h-screen items-stretch pr-10 pt-2">
             <Link href="/" className="p-2 py-2 px-6 text-2xl flex">
-                <BugAntIcon className="h-8 w-8" /><span>Chatter</span>
+                <BugAntIcon className="h-8 w-8" /><span></span>
             </Link>
             <div className="flex flex-col items-stretch h-full space-y-4 mt-4">
                 {NAVIGATION_ITEMS.map((item) => (
@@ -45,15 +45,15 @@ export const SideNav = () => {
                         <div className="h-5 w-5">
                             <item.Icon />
                         </div>
-                        <div>
+                        <div className="font-bold">
                             {item.title}
                         </div>
 
                     </Link>
 
                 ))}
-                <button className="w-full rounded-full text-2xl text-center bg-teal-500 m-4 px-6 py-2 hover:bg-teal-400 text-slate-700 transition duration-200">Chat</button>
-                <div className="">At the bottom</div>
+                <button className="w-full rounded-full text-2xl font-bold text-center bg-teal-500 m-4 px-6 py-2 hover:bg-teal-400 text-slate-700 transition duration-200">Chat</button>
+                <div className="absolute inset-x-0 bottom-0 pb-5">User Info Button</div>
             </div>
         </section>
     )

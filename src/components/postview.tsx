@@ -36,7 +36,7 @@ export const PostView = (props: PostWithUser) => {
   });
 
   return (
-    <div key={post.id} className="p-4 border-b border-stone-500 flex gap-3 hover:bg-slate-900 hover:cursor-pointer">
+    <div key={post.id} className="p-4 border-b border-slate-500 flex gap-3 hover:bg-slate-900 hover:cursor-pointer">
       <Image src={author.profileImageUrl} width={48}
         height={48} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
       <div className="flex flex-col flex-grow">
