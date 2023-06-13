@@ -39,19 +39,21 @@ const CreatePost = () => {
 
   if (!user) return <div>No user logged in...</div>
 
+  console.log(field.value !== "" && !isPosting)
+
   return (
     <div className="flex gap-3 w-full">
       <Image src={user.profileImageUrl} width={84}
         height={84} alt="Profile Image" className="rounded-full" />
       <form onSubmit={handleSubmit(onSubmit)} className="flex w-full">
         <input
-          placeholder="Send a chat!"
-          className="bg-transparent grow outline-none"
+          placeholder="What's happening?"
+          className="bg-transparent grow outline-none text-lg"
           {...register("content")}
           disabled={isPosting}
         />
 
-        {field.value !== "" && !isPosting && (<button type="submit">Post</button>)}
+        {field.value && !isPosting && (<button type="submit" className="w-28 rounded-full text-xl font-bold text-center bg-teal-500 m-4 px-2 py-2 hover:bg-teal-400 text-slate-700 transition duration-200">Post</button>)}
 
         {isPosting && <div className="flex justify-center items-center">
           <LoadingSpinner size={20} />
