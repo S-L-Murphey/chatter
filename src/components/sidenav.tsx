@@ -67,7 +67,7 @@ const UserInfoButton = () => {
 
     const { data } = api.profile.getUserByUsername.useQuery({ username: user?.username! })
 
-    if (!data) return <div>No Data</div>
+    if (!data || !data.username) return <div>No Data</div>
 
     return (
         <Link href={`/@${data.username}`}>
