@@ -1,7 +1,7 @@
-import { HomeIcon, UserIcon, BeakerIcon, BookmarkIcon, EnvelopeIcon, BellIcon, HashtagIcon, BugAntIcon, EllipsisHorizontalIcon } from "@heroicons/react/24/solid"
+import { HomeIcon, UserIcon, BugAntIcon, EllipsisHorizontalIcon, ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { api } from "~/utils/api";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
 
@@ -11,26 +11,6 @@ const NAVIGATION_ITEMS = [
         Icon: HomeIcon
     },
     {
-        title: "Explore",
-        Icon: HashtagIcon
-    },
-    {
-        title: "Notifications",
-        Icon: BellIcon
-    },
-    {
-        title: "Messages",
-        Icon: EnvelopeIcon
-    },
-    {
-        title: "Bookmarks",
-        Icon: BookmarkIcon
-    },
-    {
-        title: "Chatter Blue",
-        Icon: BeakerIcon
-    },
-    {
         title: "Profile",
         Icon: UserIcon
     },
@@ -38,27 +18,24 @@ const NAVIGATION_ITEMS = [
 
 export const SideNav = () => {
     return (
-        <section className="fixed w-72 flex flex-col h-screen items-stretch pr-12 pt-2">
-            <Link href="/" className="p-2 py-2 px-6 text-2xl flex">
-                <BugAntIcon className="h-8 w-8" /><span></span>
+        <nav className="flex flex-col top-0 py-4 px-2 ">
+            <Link href="/" className="p-5 text-2xl flex">
+                <BugAntIcon className="h-10 w-10" /><span></span>
             </Link>
-            <div className="flex flex-col items-stretch h-full space-y-4 mt-4">
+            <div className="flex flex-col items-start gap-2 whitespace-nowrap ">
                 {NAVIGATION_ITEMS.map((item) => (
-                    <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 flex items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
+                    <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
                         <div className="h-5 w-5">
                             <item.Icon />
                         </div>
                         <div className="font-bold">
                             {item.title}
                         </div>
-
                     </Link>
-
                 ))}
-                <button className="w-full rounded-full text-slate-700 text-2xl font-bold text-center bg-teal-500 m-4 py-2 hover:bg-teal-400 transition duration-200">Chat</button>
-                <div className="absolute inset-x-0 bottom-0 pb-5"><UserInfoButton /></div>
+                <SideLogInLogOut />
             </div>
-        </section>
+        </nav>
     )
 };
 
@@ -72,7 +49,7 @@ const UserInfoButton = () => {
 
     return (
         <Link href={`/@${data.username}`}>
-            <button className="flex items-center justify-center rounded-full m-4 p-2.5 text-center bg-transparent space-x-3 border border-slate-900 hover:border-slate-700 hover:bg-white/10">
+            <button className="flex items-center justify-center rounded-full p-2.5 text-center bg-transparent space-x-3 border border-slate-900 hover:border-slate-700 hover:bg-white/10">
                 <Image
                     src={data.profileImageUrl}
                     alt={`${data?.username}'s profile pic`}
@@ -80,13 +57,35 @@ const UserInfoButton = () => {
                     height={52}
                     className="rounded-full" />
                 <div className="">
-                    <div className="text-base font-semibold">{data.username}</div>
-                    <div className="text-xs">{`@${data.username}`}</div>
+                    <div className="text-base font-semibold pl-1">{data.username}</div>
+                    <div className="text-xs pl-1">{`@${data.username}`}</div>
                 </div>
                 <div><EllipsisHorizontalIcon className="w-5 h-5" /></div>
 
             </button>
         </Link>
+
+    )
+};
+
+const SideLogInLogOut = () => {
+    const { user } = useUser();
+    return (
+        <div className="rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl hover:bg-white/10 transition duration-200">{user ?
+            <>
+                <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+                <button className="font-bold">
+                    <SignOutButton />
+                </button></>
+            :
+            <>
+                <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                <div className="font-bold">
+                    <SignInButton />
+                </div>
+            </>
+        }
+        </div>
 
     )
 }

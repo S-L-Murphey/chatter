@@ -3,7 +3,6 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
-
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import type { Post } from "@prisma/client";
@@ -128,6 +127,32 @@ export const postsRouter = createTRPCRouter({
 
 
       return post;
+    }),
+
+    infinitePosts: publicProcedure
+    .input(z.object({
+      limit: z.number().min(1).max(100).nullish(),
+      cursor: z.string().nullish(), // <-- "cursor" needs to exist, but can be any type
+    }))
+    .query(async ({input, ctx}) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+      const items = await ctx.prisma.post.findMany({
+        take: limit + 1, // get an extra item at the end which we'll use as next cursor
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: 'asc',
+        },
+      })
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop()
+        nextCursor = nextItem!.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
     })
 
 });

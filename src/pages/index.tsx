@@ -14,7 +14,7 @@ const CreatePost = () => {
 
   const { register, handleSubmit, reset, control } = useForm<Post>();
 
-  const { field } = useController({name: "content", control})
+  const { field } = useController({ name: "content", control })
 
   const ctx = api.useContext();
 
@@ -88,7 +88,7 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-    <div className="text-2xl font-bold p-2.5 border-b border-slate-500">Home</div>
+      <div className="text-2xl font-bold p-2.5 border-b border-slate-500">Home</div>
       <div className="flex border-b border-slate-500 text-slate-300 p-4">
         {!isSignedIn &&
           <div className="flex justify-center">
