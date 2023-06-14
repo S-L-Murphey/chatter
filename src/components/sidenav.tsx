@@ -22,7 +22,7 @@ export const SideNav = () => {
     return (
         <nav className="flex flex-col top-0 py-4 px-2 ">
             <Link href="/" className="p-5 text-2xl flex">
-                <BugAntIcon className="h-10 w-10" /><span></span>
+                <BugAntIcon className="h-10 w-10 text-teal-500" /><span></span>
             </Link>
             <div className="flex flex-col items-start gap-2 whitespace-nowrap ">
                 {NAVIGATION_ITEMS.map((item) => (
@@ -36,7 +36,7 @@ export const SideNav = () => {
                     </Link>
                 ))}
                 <SideLogInLogOut />
-                <button className="absolute inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
+                <button className="sticky inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
                     <UserInfoButton />
                 </button>
 

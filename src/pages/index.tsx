@@ -51,7 +51,7 @@ const CreatePost = () => {
           disabled={isPosting}
         />
 
-        {field.value && !isPosting && (<button type="submit" className="w-28 rounded-full text-xl font-bold text-center bg-teal-500 m-4 px-2 py-2 hover:bg-teal-400 text-slate-700 transition duration-200">Post</button>)}
+        {field.value && !isPosting && (<button type="submit" className="w-28 rounded-full text-xl font-bold text-center bg-teal-500 my-7 hover:bg-teal-400 text-slate-700 transition duration-200">Post</button>)}
 
         {isPosting && <div className="flex justify-center items-center">
           <LoadingSpinner size={20} />
