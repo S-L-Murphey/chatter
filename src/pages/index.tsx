@@ -1,4 +1,4 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser, useClerk } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import { api } from "~/utils/api";
 import Image from "next/image";
@@ -38,8 +38,6 @@ const CreatePost = () => {
   const onSubmit: SubmitHandler<Post> = data => mutate({ content: data.content });
 
   if (!user) return <div>No user logged in...</div>
-
-  console.log(field.value !== "" && !isPosting)
 
   return (
     <div className="flex gap-3 w-full">

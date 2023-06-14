@@ -5,14 +5,14 @@ import { SideNav } from "./sidenav";
 export const PageLayout = (props: PropsWithChildren) => {
 
     return (
-        <div className="container mx-auto flex items-start sm:pr-4">
-            <div className="w-1/4">
+        <div className="container flex items-start justify-center mx-auto sm:pr-4">
+            <div className="w-1/5 ">
                 <SideNav />
             </div>
-            <div className="w-1/2 min-h-screen flex-grow border-x border-slate-500">
+            <div className="w-3/5 min-h-screen flex-grow border-x border-slate-500">
                 {props.children}
             </div>
-            <div className="w-1/4"></div>
+            <div className="w-1/5"></div>
         </div>
     )
 };

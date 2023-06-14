@@ -1,7 +1,7 @@
 import { HomeIcon, UserIcon, BugAntIcon, EllipsisHorizontalIcon, ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { api } from "~/utils/api";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, useUser, useClerk } from "@clerk/nextjs";
 import Image from "next/image";
 
 
@@ -17,6 +17,8 @@ const NAVIGATION_ITEMS = [
 ]
 
 export const SideNav = () => {
+    const { openUserProfile } = useClerk();
+
     return (
         <nav className="flex flex-col top-0 py-4 px-2 ">
             <Link href="/" className="p-5 text-2xl flex">
@@ -34,6 +36,10 @@ export const SideNav = () => {
                     </Link>
                 ))}
                 <SideLogInLogOut />
+                <button className="absolute inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
+                    <UserInfoButton />
+                </button>
+
             </div>
         </nav>
     )
@@ -43,12 +49,11 @@ const UserInfoButton = () => {
     const { user } = useUser();
     const username = user?.username ?? "";
 
-    const { data } = api.profile.getUserByUsername.useQuery({ username })
+    const { data } = api.profile.getUserByUsername.useQuery({ username });
 
-    if (!data || !data.username) return <div>No Data</div>
+    if (!data || !data.username) return <div>No Data</div>;
 
     return (
-        <Link href={`/@${data.username}`}>
             <button className="flex items-center justify-center rounded-full p-2.5 text-center bg-transparent space-x-3 border border-slate-900 hover:border-slate-700 hover:bg-white/10">
                 <Image
                     src={data.profileImageUrl}
@@ -60,11 +65,9 @@ const UserInfoButton = () => {
                     <div className="text-base font-semibold pl-1">{data.username}</div>
                     <div className="text-xs pl-1">{`@${data.username}`}</div>
                 </div>
-                <div><EllipsisHorizontalIcon className="w-5 h-5" /></div>
+                <button><EllipsisHorizontalIcon className="w-5 h-5" /></button>
 
             </button>
-        </Link>
-
     )
 };
 
