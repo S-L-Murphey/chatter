@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { LoadingSpinner } from "./loading";
+import { HeartIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(relativeTime)
 
@@ -19,7 +20,7 @@ export const PostView = (props: PostWithUser) => {
 
   const ctx = api.useContext();
 
-  const {mutate, isLoading: isDeleting} = api.posts.deletePost.useMutation({
+  const { mutate, isLoading: isDeleting } = api.posts.deletePost.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
       toast.success("Post successfully deleted.")
@@ -36,11 +37,13 @@ export const PostView = (props: PostWithUser) => {
   });
 
   return (
-    <div key={post.id} className="p-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
-      <Image src={author.profileImageUrl} width={48}
-        height={48} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
+    <div key={post.id} className="px-4 py-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
+      <div className="relative overflow-hidden">
+        <Image src={author.profileImageUrl} width={64}
+          height={64} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
+      </div>
       <div className="flex flex-col flex-grow">
-      
+
         <div className="flex gap-1 items-center">
           <Link href={`/@${author.username}`}>
             <span className="text-slate-200">{`@${author.username}`}</span>
@@ -48,11 +51,18 @@ export const PostView = (props: PostWithUser) => {
           <Link href={`/post/${post.id}`}>
             <span className="font-thin">{` · ${dayjs(post.createdAt).fromNow()}`}</span>
           </Link>
-          {user?.id === author.id && <button className="ml-auto" onClick={() => mutate({id: post.id})}>{isDeleting ? <LoadingSpinner /> : <EllipsisHorizontalIcon className="h-6 w-6 hover:text-slate-300 rounded-full" />}</button>}
+          {user?.id === author.id && <button className="ml-auto" onClick={() => mutate({ id: post.id })}>{isDeleting ? <LoadingSpinner /> : <EllipsisHorizontalIcon className="h-6 w-6 hover:text-slate-300 rounded-full" />}</button>}
         </div>
         <span>{post.content}</span>
+        <LikePost />
       </div>
     </div>
   )
 };
+
+const LikePost = () => {
+  return <button className="flex mt-1.5 transition-colors duration-200">
+    <HeartIcon className="h-5 w-5 hover:fill-red-500" />
+  </button>
+}
 

@@ -41,8 +41,8 @@ const CreatePost = () => {
 
   return (
     <div className="flex gap-3 w-full">
-      <Image src={user.profileImageUrl} width={84}
-        height={84} alt="Profile Image" className="rounded-full" />
+      <Image src={user.profileImageUrl} width={94}
+        height={94} alt="Profile Image" className="rounded-full" />
       <form onSubmit={handleSubmit(onSubmit)} className="flex w-full">
         <input
           placeholder="What's happening?"

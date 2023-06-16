@@ -17,7 +17,30 @@ model Post {
 
     content String @db.VarChar(200)
 
-    authorId String
+    Author   Author?   @relation(fields: [authorId], references: [id])
+    authorId String?
+    likes  Like[]
 
     @@index([authorId])
+}
+
+model Like {
+    authorId String
+    postId String
+    author   Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    Post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@id([authorId, postId])
+    @@index([authorId])
+    @@index([postId])
+}
+
+model Author {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    posts         Post[]
+    likes         Like[]
 }
