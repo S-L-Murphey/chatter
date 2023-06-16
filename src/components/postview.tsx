@@ -18,8 +18,8 @@ export const PostView = (props: PostWithUser) => {
   const { user } = useUser();
   const { post, author } = props;
   const userId = user?.id ?? '';
-  
-  const {data} = api.likes.getUserLikes.useQuery({userId});
+
+  const { data } = api.likes.getUserLikes.useQuery({ userId });
 
   const ctx = api.useContext();
 
@@ -39,10 +39,11 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
-  const userLikes = data !== undefined ?  data?.some(f => f?.postId === post.id) : false;
+  const userLikes = data !== undefined ? data?.some(f => f?.postId === post.id) : false;
 
-  const {mutate: likePost} = api.likes.likePost.useMutation({
+  const { mutate: likePost, isLoading: isLiking } = api.likes.likePost.useMutation({
     onSuccess: () => {
+      void ctx.likes.getUserLikes.invalidate();
       toast.success("Post Liked!")
     },
     onError: (e) => {
@@ -52,18 +53,19 @@ export const PostView = (props: PostWithUser) => {
         toast.error(errorMessage[0]);
       } else {
         toast.error("Failed to post! Too many characters.")
-      }}
-    });
-
-    const handleLike = () => {
-      if (!userLikes) {
-        likePost({postId: post.id})
-      } else {
-        toast.error("You've already liked this post")
       }
     }
+  });
 
- 
+  const handleLike = () => {
+    if (!userLikes) {
+      likePost({ postId: post.id })
+    } else {
+      toast.error("You've already liked this post")
+    }
+  };
+
+
 
   return (
     <div key={post.id} className="px-4 py-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
@@ -83,9 +85,10 @@ export const PostView = (props: PostWithUser) => {
           {user?.id === author.id && <button className="ml-auto" onClick={() => mutate({ id: post.id })}>{isDeleting ? <LoadingSpinner /> : <EllipsisHorizontalIcon className="h-6 w-6 hover:text-slate-300 rounded-full" />}</button>}
         </div>
         <span>{post.content}</span>
-        <button onClick={handleLike}>
-        <LikePost likedByUser={userLikes}/>
-        </button>
+        
+          <button onClick={handleLike} disabled={isLiking}>
+            {isLiking ? <div className="my-1.5"><LoadingSpinner /></div> : <LikePost likedByUser={userLikes} />}
+          </button>
       </div>
     </div>
   )
