@@ -1,36 +1,34 @@
-import { clerkClient } from "@clerk/nextjs";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
-import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 export const likesRouter = createTRPCRouter({
-
-    getUserByUsername: publicProcedure.input(z.object({
-        username: z.string()
-    })).query(async ({ input }) => {
-        const [user] = await clerkClient.users.getUserList({
-            username: [input.username],
-        });
-
-        if (!user) {
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "User not found",
-            })
-        }
-
-        return filterUserForClient(user);
-    }),
-
     getUserLikes: privateProcedure
-    .input(z.object({
-        userId: z.string()
-    })).query(async ({ ctx, input }) => ctx.prisma.like.findMany({
-        where: {
-          authorId: input.userId,
-        },
-      })
-      ),
+        .input(z.object({
+            userId: z.string()
+        })).query(async ({ ctx, input }) => ctx.prisma.like.findMany({
+            where: {
+                authorId: input.userId,
+            },
+        })
+        ),
+
+    likePost: privateProcedure
+        .input(z.object({
+            postId: z.string()
+        })).mutation(async ({ ctx, input }) => {
+            const authorId = ctx.userId;
+            // const { success } = await ratelimit.limit(authorId);
+
+            // if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+            const like = await ctx.prisma.like.create({
+                data: {
+                    authorId,
+                    postId: input.postId
+                }
+            });
+
+            return like;
+        }),
 
 });
