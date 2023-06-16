@@ -17,6 +17,9 @@ type PostWithUser = RouterOutputs["posts"]["getAll"][number]
 export const PostView = (props: PostWithUser) => {
   const { user } = useUser();
   const { post, author } = props;
+  const userId = user?.id ?? '';
+  
+  const {data} = api.likes.getUserLikes.useQuery({userId});
 
   const ctx = api.useContext();
 
@@ -36,6 +39,8 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
+  const userLikes = data !== undefined ?  data?.some(f => f?.postId === post.id) : false;
+
   return (
     <div key={post.id} className="px-4 py-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
       <div className="relative overflow-hidden">
@@ -54,15 +59,19 @@ export const PostView = (props: PostWithUser) => {
           {user?.id === author.id && <button className="ml-auto" onClick={() => mutate({ id: post.id })}>{isDeleting ? <LoadingSpinner /> : <EllipsisHorizontalIcon className="h-6 w-6 hover:text-slate-300 rounded-full" />}</button>}
         </div>
         <span>{post.content}</span>
-        <LikePost />
+        <LikePost likedByUser={userLikes}/>
       </div>
     </div>
   )
 };
 
-const LikePost = () => {
+type LikeButtonProps = {
+  likedByUser: boolean
+}
+
+const LikePost = ({ likedByUser }: LikeButtonProps) => {
   return <button className="flex mt-1.5 transition-colors duration-200">
-    <HeartIcon className="h-5 w-5 hover:fill-red-500" />
+    <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`} />
   </button>
 }
 

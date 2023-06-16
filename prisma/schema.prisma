@@ -17,18 +17,18 @@ model Post {
 
     content String @db.VarChar(200)
 
-    Author   Author?   @relation(fields: [authorId], references: [id])
+    Author   Author? @relation(fields: [authorId], references: [clerkId])
     authorId String?
-    likes  Like[]
+    likes    Like[]
 
     @@index([authorId])
 }
 
 model Like {
     authorId String
-    postId String
-    author   Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    Post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId   String
+    author   Author @relation(fields: [authorId], references: [clerkId], onDelete: Cascade)
+    Post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@id([authorId, postId])
     @@index([authorId])
@@ -36,7 +36,7 @@ model Like {
 }
 
 model Author {
-    id            String    @id @default(cuid())
+    clerkId       String   @unique
     name          String?
     email         String?   @unique
     emailVerified DateTime?

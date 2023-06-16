@@ -10,7 +10,7 @@ import type { Post } from "@prisma/client";
 const addUserDataToPosts = async (posts: Post[]) => {
   const users = (
     await clerkClient.users.getUserList({
-      userId: posts.map((post) => post.authorId),
+      userId: posts.map((post) => post.authorId!),
       limit: 100,
     })
   ).map(filterUserForClient);
