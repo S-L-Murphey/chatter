@@ -25,12 +25,12 @@ model Post {
 }
 
 model Like {
+    id String   @id @default(cuid())
     authorId String
     postId   String
     author   Author @relation(fields: [authorId], references: [clerkId], onDelete: Cascade)
     Post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-    @@id([authorId, postId])
     @@index([authorId])
     @@index([postId])
 }

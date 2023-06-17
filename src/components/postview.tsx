@@ -52,7 +52,23 @@ export const PostView = (props: PostWithUser) => {
       if (errorMessage && errorMessage[0]) {
         toast.error(errorMessage[0]);
       } else {
-        toast.error("Failed to post! Too many characters.")
+        toast.error("Failed to post!")
+      }
+    }
+  });
+
+  const { mutate: deletePost, isLoading: processingDelete} = api.likes.deleteLike.useMutation({
+    onSuccess: () => {
+      void ctx.likes.getUserLikes.invalidate();
+      toast.success("Post Deleted!")
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to Delete!")
       }
     }
   });
@@ -60,6 +76,8 @@ export const PostView = (props: PostWithUser) => {
   const handleLike = () => {
     if (!userLikes) {
       likePost({ postId: post.id })
+    } else if (userLikes) {
+      deletePost({ likeId: data?.find(f => f.postId === post.id)?.id! })
     } else {
       toast.error("You've already liked this post")
     }
@@ -86,8 +104,8 @@ export const PostView = (props: PostWithUser) => {
         </div>
         <span>{post.content}</span>
         
-          <button onClick={handleLike} disabled={isLiking}>
-            {isLiking ? <div className="my-1.5"><LoadingSpinner /></div> : <LikePost likedByUser={userLikes} />}
+          <button onClick={handleLike} disabled={isLiking || processingDelete}>
+            {isLiking || processingDelete ? <div className="my-1.5"><LoadingSpinner /></div> : <LikePost likedByUser={userLikes} />}
           </button>
       </div>
     </div>

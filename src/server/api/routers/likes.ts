@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 export const likesRouter = createTRPCRouter({
@@ -30,5 +31,32 @@ export const likesRouter = createTRPCRouter({
 
             return like;
         }),
+
+        deleteLike: privateProcedure
+        .input(
+            z.object({
+              likeId: z.string()
+            })
+          )
+          .mutation(async ({ ctx, input }) => {
+            const { likeId } = input;
+            const authorId = ctx.userId;
+
+            const like = await ctx.prisma.like.delete({
+              where: {
+                id: likeId
+              },
+            });
+      
+            if (!like) {
+              throw new TRPCError({
+                code: 'NOT_FOUND',
+                message: 'Like with that ID not found',
+              });
+            }
+      
+      
+            return like;
+          }),
 
 });
