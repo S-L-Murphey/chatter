@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const likesRouter = createTRPCRouter({
     getUserLikes: privateProcedure
@@ -35,12 +35,11 @@ export const likesRouter = createTRPCRouter({
         deleteLike: privateProcedure
         .input(
             z.object({
-              likeId: z.string()
+              likeId: z.string().optional()
             })
           )
           .mutation(async ({ ctx, input }) => {
             const { likeId } = input;
-            const authorId = ctx.userId;
 
             const like = await ctx.prisma.like.delete({
               where: {

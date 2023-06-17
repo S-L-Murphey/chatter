@@ -73,11 +73,15 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
+  if (!data) return <div>No Data</div>
+
+  const postToDelete = data.find(f => f.postId === post.id)?.id
+
   const handleLike = () => {
     if (!userLikes) {
       likePost({ postId: post.id })
     } else if (userLikes) {
-      deletePost({ likeId: data?.find(f => f.postId === post.id)?.id! })
+      deletePost({ likeId: postToDelete })
     } else {
       toast.error("You've already liked this post")
     }
