@@ -7,7 +7,7 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import { useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
-import { LoadingSpinner } from "./loading";
+import { LoadingPage, LoadingSpinner } from "./loading";
 import { HeartIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(relativeTime)
@@ -19,7 +19,7 @@ export const PostView = (props: PostWithUser) => {
   const { post, author } = props;
   const userId = user?.id ?? '';
 
-  const { data } = api.likes.getUserLikes.useQuery({ userId });
+  const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId });
 
   const ctx = api.useContext();
 
@@ -73,7 +73,7 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
-  if (!data) return <div>No Data</div>
+  if (!data || isLoading) return <LoadingPage />
 
   const postToDelete = data.find(f => f.postId === post.id)?.id
 
