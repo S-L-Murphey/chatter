@@ -42,8 +42,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     }
   };
 
-  console.log(postState)
-
   return (
     <>
       <Head>
