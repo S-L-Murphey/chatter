@@ -10,7 +10,7 @@ const addUserDataToLikes = async (likes: (Like & {
 })[]) => {
   const users = (
     await clerkClient.users.getUserList({
-      userId: likes.map((like) => like.authorId!),
+      userId: likes.map((like) => like.authorId),
       limit: 100,
     })
   ).map(filterUserForClient);
