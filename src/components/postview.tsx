@@ -9,10 +9,18 @@ import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { LoadingPage, LoadingSpinner } from "./loading";
 import { HeartIcon } from "@heroicons/react/24/outline";
+import type { Post } from "@prisma/client";
 
 dayjs.extend(relativeTime)
 
-type PostWithUser = RouterOutputs["posts"]["getAll"][number]
+type PostWithUser = {
+  post: Post;
+  author: {
+      username: string;
+      id: string;
+      profileImageUrl: string;
+  };
+}
 
 export const PostView = (props: PostWithUser) => {
   const { user } = useUser();
@@ -22,7 +30,7 @@ export const PostView = (props: PostWithUser) => {
   const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId });
 
   const ctx = api.useContext();
-
+ 
   const { mutate, isLoading: isDeleting } = api.posts.deletePost.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
@@ -39,7 +47,7 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
-  const userLikes = data !== undefined ? data?.some(f => f?.postId === post.id) : false;
+  const userLikes = data !== undefined ? data?.some(f => f?.like.postId === post.id) : false;
 
   const { mutate: likePost, isLoading: isLiking } = api.likes.likePost.useMutation({
     onSuccess: () => {
@@ -75,11 +83,11 @@ export const PostView = (props: PostWithUser) => {
 
   if (!data || isLoading) return <LoadingPage />
 
-  const postToDelete = data.find(f => f.postId === post.id)?.id
+  const postToDelete = data.find(f => f.like.postId === post.id)?.like.id
 
   const handleLike = () => {
     if (!userLikes) {
-      likePost({ postId: post.id })
+      likePost({ postId: post.id, authorId: post.authorId! })
     } else if (userLikes) {
       deletePost({ likeId: postToDelete })
     } else {

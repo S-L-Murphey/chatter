@@ -27,12 +27,15 @@ model Post {
 model Like {
     id String   @id @default(cuid())
     authorId String
+    likerId String
     postId   String
-    author   Author @relation(fields: [authorId], references: [clerkId], onDelete: Cascade)
-    Post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+    author   Author @relation("LikedPosts", fields: [authorId], references: [clerkId], onDelete: Cascade)
+    liker   Author @relation("Likes", fields: [likerId], references: [clerkId], onDelete: Cascade)
+    post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@index([authorId])
     @@index([postId])
+    @@index([likerId])
 }
 
 model Author {
@@ -42,5 +45,6 @@ model Author {
     emailVerified DateTime?
     image         String?
     posts         Post[]
-    likes         Like[]
+    likes         Like[] @relation("Likes")
+    likedPosts Like[] @relation("LikedPosts")
 }
