@@ -16,9 +16,9 @@ dayjs.extend(relativeTime)
 type PostWithUser = {
   post: Post;
   author: {
-      username: string;
-      id: string;
-      profileImageUrl: string;
+    username: string;
+    id: string;
+    profileImageUrl: string;
   };
 }
 
@@ -26,18 +26,19 @@ export const PostView = (props: PostWithUser) => {
   const { user } = useUser();
   const { post, author } = props;
   const userId = user?.id ?? '';
+  const username = user?.username;
   const router = useRouter()
   const routerId = router.query.slug && router.query.slug;
-  const userRouterId = typeof routerId === 'string' ? routerId.replace("@", '') : 'nothing';
+  const userRouterId = typeof routerId === 'string' ? routerId.replace("@", '') : username!;
 
-  const {data: userByUsername} = api.profile.getUserByUsername.useQuery({username: userRouterId})
+  const { data: userByUsername } = api.profile.getUserByUsername.useQuery({ username: userRouterId })
 
-  const officialUserId = userRouterId === "nothing" ? userId : userByUsername?.id
+  const officialUserId = userRouterId === username! ? userId : userByUsername?.id
 
   const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId: officialUserId! });
 
   const ctx = api.useContext();
- 
+
   const { mutate, isLoading: isDeleting } = api.posts.deletePost.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
@@ -72,7 +73,7 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
-  const { mutate: deleteLike, isLoading: processingDelete} = api.likes.deleteLike.useMutation({
+  const { mutate: deleteLike, isLoading: processingDelete } = api.likes.deleteLike.useMutation({
     onSuccess: () => {
       void ctx.likes.getUserLikes.invalidate();
       toast.success("Like Deleted!")
@@ -124,10 +125,20 @@ export const PostView = (props: PostWithUser) => {
           {user?.id === author.id && <button className="ml-auto" onClick={() => mutate({ id: post.id })}>{isDeleting ? <LoadingSpinner /> : <EllipsisHorizontalIcon className="h-6 w-6 hover:text-slate-300 rounded-full" />}</button>}
         </div>
         <span>{post.content}</span>
-        
-          <button onClick={handleLike} disabled={isLiking || processingDelete}>
-            {isLiking || processingDelete ? <div className="my-1.5"><LoadingSpinner /></div> : <LikePost likedByUser={userLikes} />}
-          </button>
+
+        <button onClick={handleLike} disabled={isLiking || processingDelete}>
+          {isLiking || processingDelete ?
+            <div className="my-1.5">
+              <LoadingSpinner />
+            </div>
+            :
+            <div className="flex gap-3">
+              <LikePost likedByUser={userLikes} />
+              <span className="pt-1.5">
+                <LikeCount postId={post.id} />
+              </span>
+            </div>}
+        </button>
       </div>
     </div>
   )
@@ -139,7 +150,20 @@ type LikeButtonProps = {
 
 const LikePost = ({ likedByUser }: LikeButtonProps) => {
   return <button className="flex mt-1.5 transition-colors duration-200" >
-    <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`}/>
+    <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`} />
   </button>
+}
+
+type LikeCountProps = {
+  postId: string
+}
+
+const LikeCount = ({ postId }: LikeCountProps) => {
+  const { data, isLoading } = api.likes.getLikesByPostId.useQuery({ postId });
+  const likeCount = data?.length
+
+  if (isLoading) return <LoadingSpinner />
+
+  return <div className="text-slate-400 text-sm">{likeCount}</div>
 }
 
