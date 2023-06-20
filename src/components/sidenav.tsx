@@ -40,7 +40,7 @@ export const SideNav = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={`/@${user.username}`}>
+                        <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={user.username ? `/@${user.username}` : `/#`}>
                             <div className="h-5 w-5">
                                 <UserIcon />
                             </div>
