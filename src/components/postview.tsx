@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { LoadingPage, LoadingSpinner } from "./loading";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import type { Post } from "@prisma/client";
+import { useRouter } from "next/router";
 
 dayjs.extend(relativeTime)
 
@@ -25,8 +26,15 @@ export const PostView = (props: PostWithUser) => {
   const { user } = useUser();
   const { post, author } = props;
   const userId = user?.id ?? '';
+  const router = useRouter()
+  const routerId = router.query.slug && router.query.slug;
+  const userRouterId = typeof routerId === 'string' ? routerId.replace("@", '') : 'nothing';
 
-  const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId });
+  const {data: userByUsername} = api.profile.getUserByUsername.useQuery({username: userRouterId})
+
+  const officialUserId = userRouterId === "nothing" ? userId : userByUsername?.id
+
+  const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId: officialUserId! });
 
   const ctx = api.useContext();
  
@@ -128,7 +136,6 @@ type LikeButtonProps = {
 }
 
 const LikePost = ({ likedByUser }: LikeButtonProps) => {
-
   return <button className="flex mt-1.5 transition-colors duration-200" >
     <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`} />
   </button>

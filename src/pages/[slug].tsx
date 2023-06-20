@@ -61,9 +61,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="p-4 text-2xl font-bold">{`@${data.username ?? data.username ?? "unknown"
           }`}</div>
         <div className="flex justify-evenly py-2.5 text-white/70 font-bold">
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200`} onClick={handleTweetView}>Tweets</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${postState && `underline`}`} onClick={handleTweetView}>Tweets</button>
 
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200`} onClick={handleLikeView}>Likes</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${!postState && `underline`}`} onClick={handleLikeView}>Likes</button>
         </div>
         <div className="w-full border-b border-slate-400" />
         {postState ? <ProfileFeed userId={data.id} /> : <LikeFeed userId={data.id} />}
