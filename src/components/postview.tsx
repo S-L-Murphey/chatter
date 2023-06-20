@@ -72,10 +72,10 @@ export const PostView = (props: PostWithUser) => {
     }
   });
 
-  const { mutate: deletePost, isLoading: processingDelete} = api.likes.deleteLike.useMutation({
+  const { mutate: deleteLike, isLoading: processingDelete} = api.likes.deleteLike.useMutation({
     onSuccess: () => {
       void ctx.likes.getUserLikes.invalidate();
-      toast.success("Post Deleted!")
+      toast.success("Like Deleted!")
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
@@ -90,15 +90,17 @@ export const PostView = (props: PostWithUser) => {
 
   if (!data || isLoading) return <LoadingPage />
 
-  const postToDelete = data.find(f => f.like.postId === post.id)?.like.id
+  const likeToDelete = data.find(f => f.like.postId === post.id)?.like.id
+
+  const isLoggedInUsersLike = data.find(f => f.like.postId === post.id)?.like.authorId === officialUserId;
 
   const handleLike = () => {
     if (!userLikes) {
       likePost({ postId: post.id, authorId: post.authorId! })
-    } else if (userLikes) {
-      deletePost({ likeId: postToDelete })
+    } else if (userLikes && isLoggedInUsersLike) {
+      deleteLike({ likeId: likeToDelete })
     } else {
-      toast.error("You've already liked this post")
+      toast.error("Unable to delete like.")
     }
   };
 
@@ -137,7 +139,7 @@ type LikeButtonProps = {
 
 const LikePost = ({ likedByUser }: LikeButtonProps) => {
   return <button className="flex mt-1.5 transition-colors duration-200" >
-    <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`} />
+    <HeartIcon className={`transition-colors duration-200 h-5 w-5 hover:fill-red-500 ${likedByUser ? 'fill-red-500' : ''}`}/>
   </button>
 }
 

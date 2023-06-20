@@ -4,10 +4,10 @@ import { api } from "~/utils/api";
 import { SignInButton, SignOutButton, useUser, useClerk } from "@clerk/nextjs";
 import Image from "next/image";
 
-
 const NAVIGATION_ITEMS = [
     {
         title: "Home",
+        href: '/',
         Icon: HomeIcon
     },
     {
@@ -18,6 +18,7 @@ const NAVIGATION_ITEMS = [
 
 export const SideNav = () => {
     const { openUserProfile } = useClerk();
+    const {user} = useUser();
 
     return (
         <nav className="flex flex-col top-0 py-4 px-2 ">
@@ -25,7 +26,29 @@ export const SideNav = () => {
                 <BugAntIcon className="h-10 w-10 text-teal-500" /><span></span>
             </Link>
             <div className="flex flex-col items-start gap-2 whitespace-nowrap ">
-                {NAVIGATION_ITEMS.map((item) => (
+                <ul>
+                    <li>
+                        <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href='/'>
+                            <div className="h-5 w-5">
+                                <HomeIcon />
+                            </div>
+                            <div className="font-bold">
+                                Home
+                            </div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={`/@${user?.username}`}>
+                            <div className="h-5 w-5">
+                                <UserIcon />
+                            </div>
+                            <div className="font-bold">
+                                Profile
+                            </div>
+                        </Link>
+                    </li>
+                </ul>
+                {/* {NAVIGATION_ITEMS.map((item) => (
                     <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
                         <div className="h-5 w-5">
                             <item.Icon />
@@ -34,7 +57,7 @@ export const SideNav = () => {
                             {item.title}
                         </div>
                     </Link>
-                ))}
+                ))} */}
                 <SideLogInLogOut />
                 <button className="sticky inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
                     <UserInfoButton />
@@ -54,20 +77,20 @@ const UserInfoButton = () => {
     if (!data || !data.username) return <div>No Data</div>;
 
     return (
-            <button className="flex items-center justify-center rounded-full p-2.5 text-center bg-transparent space-x-3 border border-slate-900 hover:border-slate-700 hover:bg-white/10">
-                <Image
-                    src={data.profileImageUrl}
-                    alt={`${data?.username}'s profile pic`}
-                    width={52}
-                    height={52}
-                    className="rounded-full" />
-                <div className="">
-                    <div className="text-base font-semibold pl-1">{data.username}</div>
-                    <div className="text-xs pl-1">{`@${data.username}`}</div>
-                </div>
-                <button><EllipsisHorizontalIcon className="w-5 h-5" /></button>
+        <button className="flex items-center justify-center rounded-full p-2.5 text-center bg-transparent space-x-3 border border-slate-900 hover:border-slate-700 hover:bg-white/10">
+            <Image
+                src={data.profileImageUrl}
+                alt={`${data?.username}'s profile pic`}
+                width={52}
+                height={52}
+                className="rounded-full" />
+            <div className="">
+                <div className="text-base font-semibold pl-1">{data.username}</div>
+                <div className="text-xs pl-1">{`@${data.username}`}</div>
+            </div>
+            <button><EllipsisHorizontalIcon className="w-5 h-5" /></button>
 
-            </button>
+        </button>
     )
 };
 

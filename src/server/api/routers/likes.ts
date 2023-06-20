@@ -57,9 +57,6 @@ export const likesRouter = createTRPCRouter({
             authorId: z.string()
         })).mutation(async ({ ctx, input }) => {
             const likerId = ctx.userId;
-            // const { success } = await ratelimit.limit(authorId);
-
-            // if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
             const like = await ctx.prisma.like.create({
                 data: {
