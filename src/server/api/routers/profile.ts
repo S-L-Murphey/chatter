@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 export const profileRouter = createTRPCRouter({
@@ -21,6 +21,60 @@ export const profileRouter = createTRPCRouter({
         }
 
         return filterUserForClient(user);
-    })
+    }),
+
+    getFollowsByUserId: privateProcedure
+    .input(z.object({
+      userId: z.string()
+    })).query(async ({ ctx, input }) => {
+      const userFollows = await ctx.prisma.followers.findMany({
+        where: {
+          followerId: input.userId,
+        },
+      })
+      return userFollows
+    }),
+
+    followUser: privateProcedure
+    .input(z.object({
+      userId: z.string()
+    })).mutation(async ({ ctx, input }) => {
+      const followerId = ctx.userId;
+
+      const follow = await ctx.prisma.followers.create({
+        data: {
+          userId: input.userId,
+          followerId: followerId
+        }
+      });
+
+      return follow;
+    }),
+
+    unfollowUser: privateProcedure
+    .input(
+      z.object({
+        id: z.string().optional()
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const follow = await ctx.prisma.followers.delete({
+        where: {
+          id: id
+        },
+      });
+
+      if (!follow) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Follow with that ID not found',
+        });
+      }
+
+
+      return follow;
+    }),
 
 });

@@ -7,6 +7,8 @@ import { LoadingPage } from "~/components/loading";
 import { PostView } from "~/components/postview";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
@@ -58,12 +60,15 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             className="absolute bottom-0 left-0 -mb-[64px] rounded-full ml-4 border-2 border-black bg-black" />
         </div>
         <div className="h-[64px]" />
-        <div className="p-4 text-2xl font-bold">{`@${data.username ?? data.username ?? "unknown"
-          }`}</div>
+        <div className="flex justify-between py-7">
+          <div className="pl-4 text-2xl font-bold">{`@${data.username ?? data.username ?? "unknown"
+            }`}</div>
+          <FollowUnfollow data={data}/>
+        </div>
         <div className="flex justify-evenly py-2.5 text-white/70 font-bold">
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${postState ? 'underline': ''}`} onClick={handleTweetView}>Tweets</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${postState ? 'underline' : ''}`} onClick={handleTweetView}>Tweets</button>
 
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${!postState ? 'underline': ''}`} onClick={handleLikeView}>Likes</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${!postState ? 'underline' : ''}`} onClick={handleLikeView}>Likes</button>
         </div>
         <div className="w-full border-b border-slate-400" />
         {postState ? <ProfileFeed userId={data.id} /> : <LikeFeed userId={data.id} />}
@@ -114,4 +119,60 @@ const LikeFeed = (props: { userId: string }) => {
     {transformedLikes?.map(fullPost => (<PostView {...fullPost} key={fullPost.post?.id} />
     ))}
   </div>
+};
+
+type FollowButtonProps = {
+  data: {
+    id: string;
+    username: string | null;
+    profileImageUrl: string;
+  }
+}
+
+
+const FollowUnfollow = ({ data }: FollowButtonProps) => {
+
+  const ctx = api.useContext();
+
+  const { mutate: followUser, isLoading: sendingFollow } = api.profile.followUser.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+      toast.success(`Now following ${data.username}!`)
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to follow!")
+      }
+
+    }
+  });
+
+  const { mutate: unfollowUser, isLoading: deletingFollow } = api.profile.unfollowUser.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+      toast.success(`No longer following ${data.username}!`)
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to unfollow!")
+      }
+
+    }
+  });
+
+
+  return (
+    <button className="mr-8 px-6 rounded-full border border-slate-100 font-semibold hover:bg-teal-500 hover:text-slate-800 hover:border-slate-800" onClick={() => followUser({ userId: data.id })}>
+      <span className="flex items-center"><PlusIcon className="h-5 w-5 mr-1" />Follow
+      </span>
+    </button>
+  )
 }
