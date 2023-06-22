@@ -47,6 +47,7 @@ model Author {
     likedPosts Like[]  @relation("LikedPosts")
     followers Followers[] @relation("Followers")
     following Followers[] @relation("Following")
+    createdAt DateTime @default(now())
 }
 
 model Followers {
