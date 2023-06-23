@@ -4,18 +4,6 @@ import { api } from "~/utils/api";
 import { SignInButton, SignOutButton, useUser, useClerk } from "@clerk/nextjs";
 import Image from "next/image";
 
-const NAVIGATION_ITEMS = [
-    {
-        title: "Home",
-        href: '/',
-        Icon: HomeIcon
-    },
-    {
-        title: "Profile",
-        Icon: UserIcon
-    },
-]
-
 export const SideNav = () => {
     const { openUserProfile } = useClerk();
     const {user} = useUser();
@@ -23,45 +11,35 @@ export const SideNav = () => {
     if (!user) return <div></div>
 
     return (
-        <nav className="flex flex-col top-0 py-4 px-2 ">
-            <Link href="/" className="p-5 text-2xl flex">
+        <nav className="flex flex-col top-0 p-3">
+            <Link href="/" className="py-4 pl-5 text-2xl flex">
                 <BugAntIcon className="h-10 w-10 text-teal-500" /><span></span>
             </Link>
             <div className="flex flex-col items-start gap-2 whitespace-nowrap ">
                 <ul>
                     <li>
                         <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href='/'>
-                            <div className="h-5 w-5">
+                            <div className="h-10 w-10 lg:w-5 lg:h-5">
                                 <HomeIcon />
                             </div>
-                            <div className="font-bold">
+                            <div className="font-bold hidden lg:block">
                                 Home
                             </div>
                         </Link>
                     </li>
                     <li>
                         <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={user.username ? `/@${user.username}` : `/#`}>
-                            <div className="h-5 w-5">
+                            <div className="h-10 w-10 lg:w-5 lg:h-5">
                                 <UserIcon />
                             </div>
-                            <div className="font-bold">
+                            <div className="font-bold hidden lg:block">
                                 Profile
                             </div>
                         </Link>
                     </li>
                 </ul>
-                {/* {NAVIGATION_ITEMS.map((item) => (
-                    <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={`/${item.title.toLowerCase()}`} key={item.title}>
-                        <div className="h-5 w-5">
-                            <item.Icon />
-                        </div>
-                        <div className="font-bold">
-                            {item.title}
-                        </div>
-                    </Link>
-                ))} */}
                 <SideLogInLogOut />
-                <button className="sticky inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
+                <button className="sticky inset-x-24 bottom-0 pb-5 hidden lg:block " onClick={() => openUserProfile()}>
                     <UserInfoButton />
                 </button>
 
@@ -90,7 +68,7 @@ const UserInfoButton = () => {
                 <div className="text-base font-semibold pl-1">{data.username}</div>
                 <div className="text-xs pl-1">{`@${data.username}`}</div>
             </div>
-            <button><EllipsisHorizontalIcon className="w-5 h-5" /></button>
+            <button className=""><EllipsisHorizontalIcon className="w-5 h-5" /></button>
 
         </button>
     )
@@ -101,14 +79,14 @@ const SideLogInLogOut = () => {
     return (
         <div className="rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl hover:bg-white/10 transition duration-200">{user ?
             <>
-                <ArrowLeftOnRectangleIcon className="h-5 w-5" />
-                <button className="font-bold">
+                <ArrowLeftOnRectangleIcon className="h-10 w-10 lg:w-5 lg:h-5" />
+                <button className="font-bold hidden lg:block">
                     <SignOutButton />
                 </button></>
             :
             <>
-                <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                <div className="font-bold">
+                <ArrowRightOnRectangleIcon className="h-10 w-10 lg:w-5 lg:h-5" />
+                <div className="font-bold hidden lg:block">
                     <SignInButton />
                 </div>
             </>

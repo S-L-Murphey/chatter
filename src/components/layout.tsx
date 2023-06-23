@@ -6,13 +6,13 @@ export const PageLayout = (props: PropsWithChildren) => {
 
     return (
         <div className="container flex items-start justify-center mx-auto sm:pr-4">
-            <div className="w-1/5 ">
+            <div className="w-1/5 hidden md:block">
                 <SideNav />
             </div>
             <div className="w-3/5 min-h-screen flex-grow border-x border-slate-500">
                 {props.children}
             </div>
-            <div className="w-1/5"></div>
+            <div className="w-1/5 hidden md:block"></div>
         </div>
     )
 };
