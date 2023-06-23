@@ -35,9 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Throws on error, returns the verified content on success
       payload = webhook.verify(body, headers);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log(err);
-      return res.status(400).send({ message: 'Unauthorized', error: err.message });
+      return res.status(400).send({ message: 'Unauthorized', error: err });
     }
 
     if (!payload) {
@@ -47,9 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let dbResponse;
     try {
       dbResponse = await handleClerkWebhook(payload as ClerkUserObject);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log("err");
-      return res.status(400).send({ message: 'INTERNAL_SERVER_ERROR', error: err.message });
+      return res.status(400).send({ message: 'INTERNAL_SERVER_ERROR', error: err });
     }
 
     if (dbResponse) {
