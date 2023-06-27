@@ -3,6 +3,7 @@ import type { ClerkUserObject } from '~/server/clerk/schema/ClerkUserObjectWebho
 import type { Readable } from 'node:stream';
 import { handleClerkWebhook } from '~/server/clerk/handleClerkWebhooks';
 import { Webhook } from 'svix';
+import type { WebhookRequiredHeaders, WebhookUnbrandedRequiredHeaders } from 'svix';
 
 export const config = {
   api: {
@@ -25,7 +26,7 @@ async function buffer(readable: Readable) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const body = (await buffer(req)).toString();
-    const headers = req.headers as Record<string, string>;
+    const headers = req.headers as WebhookRequiredHeaders | WebhookUnbrandedRequiredHeaders | Record<string, string>;
 
     let payload: unknown;
     try {
