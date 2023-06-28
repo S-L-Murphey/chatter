@@ -173,7 +173,7 @@ const FollowUnfollow = ({ data }: FollowButtonProps) => {
     }
   });
 
-  const { data: userFollows } = api.profile.getFollowsByUserId.useQuery({ userId: userId! })
+  const { data: userFollows } = api.profile.getFollowsByUserId.useQuery({ userId: userId })
 
   if (!data) return <LoadingSpinner />
 
