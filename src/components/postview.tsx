@@ -105,8 +105,6 @@ export const PostView = (props: PostWithUser) => {
     }
   };
 
-
-
   return (
     <div key={post.id} className="px-4 py-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
       <div className="relative overflow-hidden">

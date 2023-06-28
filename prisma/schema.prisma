@@ -14,10 +14,7 @@ generator client {
 model Post {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-
     content String @db.VarChar(200)
-
-    Author   Author? @relation(fields: [authorId], references: [clerkId])
     authorId String?
     likes    Like[]
 
@@ -29,8 +26,6 @@ model Like {
     authorId String
     likerId  String
     postId   String
-    author   Author @relation("LikedPosts", fields: [authorId], references: [clerkId], onDelete: Cascade)
-    liker    Author @relation("Likes", fields: [likerId], references: [clerkId], onDelete: Cascade)
     post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@index([authorId])
@@ -38,25 +33,10 @@ model Like {
     @@index([likerId])
 }
 
-model Author {
-    clerkId    String  @unique
-    email      String?  @unique
-    username   String? @unique
-    posts      Post[]
-    likes      Like[]  @relation("Likes")
-    likedPosts Like[]  @relation("LikedPosts")
-    followers Followers[] @relation("Followers")
-    following Followers[] @relation("Following")
-    createdAt DateTime @default(now())
-}
-
-model Followers {
+model Follow {
     id String @id @default(cuid())
     userId String
     followerId String
-    followers Author @relation("Followers", fields: [followerId], references: [clerkId], onDelete: Cascade)
-    following Author @relation("Following", fields: [userId], references: [clerkId], onDelete: Cascade)
 
     @@index([userId])
-    @@index([followerId])
 }

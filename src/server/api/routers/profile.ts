@@ -27,7 +27,7 @@ export const profileRouter = createTRPCRouter({
     .input(z.object({
       userId: z.string()
     })).query(async ({ ctx, input }) => {
-      const userFollows = await ctx.prisma.followers.findMany({
+      const userFollows = await ctx.prisma.follow.findMany({
         where: {
           followerId: input.userId,
         },
@@ -41,7 +41,7 @@ export const profileRouter = createTRPCRouter({
     })).mutation(async ({ ctx, input }) => {
       const followerId = ctx.userId;
 
-      const follow = await ctx.prisma.followers.create({
+      const follow = await ctx.prisma.follow.create({
         data: {
           userId: input.userId,
           followerId: followerId
@@ -54,13 +54,13 @@ export const profileRouter = createTRPCRouter({
     unfollowUser: privateProcedure
     .input(
       z.object({
-        id: z.string().optional()
+        id: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      const follow = await ctx.prisma.followers.delete({
+      const follow = await ctx.prisma.follow.delete({
         where: {
           id: id
         },
