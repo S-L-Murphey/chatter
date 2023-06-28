@@ -93,9 +93,10 @@ export const PostView = (props: PostWithUser) => {
 
   const likeToDelete = data.find(f => f.like.postId === post.id)?.like.id
 
-  const isLoggedInUsersLike = data.find(f => f.like.postId === post.id)?.like.authorId === officialUserId;
+  const isLoggedInUsersLike = data.find(f => f.like.postId === post.id)?.like.likerId === userId;
 
   const handleLike = () => {
+
     if (!userLikes) {
       likePost({ postId: post.id, authorId: post.authorId! })
     } else if (userLikes && isLoggedInUsersLike) {

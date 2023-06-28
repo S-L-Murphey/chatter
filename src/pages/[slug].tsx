@@ -141,7 +141,7 @@ const FollowUnfollow = ({ data }: FollowButtonProps) => {
 
   const { mutate: followUser, isLoading: sendingFollow } = api.profile.followUser.useMutation({
     onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
+      void ctx.profile.getFollowsByUserId.invalidate();
       toast.success(`Now following ${data.username!}!`)
     },
     onError: (e) => {
@@ -158,7 +158,7 @@ const FollowUnfollow = ({ data }: FollowButtonProps) => {
 
   const { mutate: unfollowUser, isLoading: deletingFollow } = api.profile.unfollowUser.useMutation({
     onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
+      void ctx.profile.getFollowsByUserId.invalidate();
       toast.success(`No longer following ${data.username!}!`)
     },
     onError: (e) => {
