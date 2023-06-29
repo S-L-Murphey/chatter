@@ -19,27 +19,27 @@ export const SideNav = () => {
                 <ul>
                     <li>
                         <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href='/'>
-                            <div className="h-10 w-10 lg:w-5 lg:h-5">
+                            <div className="h-5 w-5">
                                 <HomeIcon />
                             </div>
-                            <div className="font-bold hidden lg:block">
+                            <div className="font-bold">
                                 Home
                             </div>
                         </Link>
                     </li>
                     <li>
                         <Link className="hover:bg-white/10 transition duration-200 rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl" href={user.username ? `/@${user.username}` : `/#`}>
-                            <div className="h-10 w-10 lg:w-5 lg:h-5">
+                            <div className="h-5 w-5">
                                 <UserIcon />
                             </div>
-                            <div className="font-bold hidden lg:block">
+                            <div className="font-bold">
                                 Profile
                             </div>
                         </Link>
                     </li>
                 </ul>
                 <SideLogInLogOut />
-                <button className="sticky inset-x-24 bottom-0 pb-5 hidden lg:block " onClick={() => openUserProfile()}>
+                <button className="sticky inset-x-24 bottom-0 pb-5" onClick={() => openUserProfile()}>
                     <UserInfoButton />
                 </button>
 
@@ -79,14 +79,14 @@ const SideLogInLogOut = () => {
     return (
         <div className="rounded-3xl p-2 py-2 px-5 flex items-center space-x-4 text-2xl hover:bg-white/10 transition duration-200">{user ?
             <>
-                <ArrowLeftOnRectangleIcon className="h-10 w-10 lg:w-5 lg:h-5" />
-                <button className="font-bold hidden lg:block">
+                <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+                <button className="font-bold">
                     <SignOutButton />
                 </button></>
             :
             <>
                 <ArrowRightOnRectangleIcon className="h-10 w-10 lg:w-5 lg:h-5" />
-                <div className="font-bold hidden lg:block">
+                <div className="font-bold">
                     <SignInButton />
                 </div>
             </>
