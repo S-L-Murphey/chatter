@@ -15,7 +15,6 @@ export const LikeUnlike = (props: LikeUnlikeProps) => {
     const { post, officialUserId, userId } = props;
     const { data, isLoading } = api.likes.getUserLikes.useQuery({ userId: officialUserId! });
   
-  
     const ctx = api.useContext();
   
     const userLikes = data !== undefined ? data?.some(f => f?.like.postId === post.id) : false;
@@ -84,4 +83,5 @@ export const LikeUnlike = (props: LikeUnlikeProps) => {
           </div>}
       </button>
     )
-  }
+  };
+  

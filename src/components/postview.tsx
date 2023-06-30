@@ -57,7 +57,7 @@ export const PostView = (props: PostWithUser) => {
     <div key={post.id} className="px-4 py-4 border-b border-slate-500 flex gap-3 hover:bg-white/10 hover:cursor-pointer">
       <div className="relative overflow-hidden">
         <Image src={author.profileImageUrl} width={64}
-          height={64} alt={`@${author.username}'s profile picture.`} className="rounded-full" />
+          height={64} alt={`@${author.username}'s profile picture.`} className="rounded-full w-[64px] h-[64px]"/>
       </div>
       <div className="flex flex-col flex-grow">
 

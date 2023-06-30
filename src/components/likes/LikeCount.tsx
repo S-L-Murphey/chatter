@@ -8,7 +8,7 @@ type LikeCountProps = {
 export const LikeCount = ({ postId }: LikeCountProps) => {
     
     const { data, isLoading } = api.likes.getLikesByPostId.useQuery({ postId });
-    const likeCount = data?.length
+    const likeCount = data?.length;
   
     if (isLoading) return <LoadingSpinner />
   

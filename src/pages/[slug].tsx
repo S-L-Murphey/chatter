@@ -8,9 +8,8 @@ import { PostView } from "~/components/postview";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { PlusIcon, MinusIcon, ComputerDesktopIcon } from "@heroicons/react/24/solid";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/router";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
@@ -59,7 +58,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               }'s profile pic`}
             height={128}
             width={128}
-            className="absolute bottom-0 left-0 -mb-[64px] rounded-full ml-4 border-2 border-black bg-black" />
+            className="absolute bottom-0 left-0 -mb-[64px] rounded-full ml-4 border-2 border-black bg-black w-[128px] h-[128px]" />
         </div>
         <div className="h-[64px]" />
         <div className="flex justify-between py-7">
