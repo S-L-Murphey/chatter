@@ -25,6 +25,7 @@ const ProfileFeed = (props: { userId: string }) => {
 }
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
+  const { user } = useUser();
   const [postState, setPostState] = useState(true);
   const [likeState, setLikeState] = useState(false);
 
@@ -64,7 +65,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="flex justify-between py-7">
           <div className="pl-4 text-2xl font-bold">{`@${data.username ?? data.username ?? "unknown"
             }`}</div>
-          <FollowUnfollow data={data} />
+          {user?.username !== data.username ?
+            <FollowUnfollow data={data} />
+            : <div></div>
+          }
         </div>
         <div className="flex justify-evenly py-2.5 text-white/70 font-bold">
           <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${postState ? 'underline' : ''}`} onClick={handleTweetView}>Tweets</button>
@@ -187,7 +191,7 @@ const FollowUnfollow = ({ data }: FollowButtonProps) => {
         </button>
         :
         <button className="mr-8 px-6 rounded-full border border-slate-100 font-semibold hover:bg-teal-500 hover:text-slate-800 hover:border-slate-800" onClick={() => followUser({ userId: data.id })}>
-          <span className="flex items-center"><PlusIcon className="h-5 w-5 mr-1" />Follow
+          <span className="flex items-center"><PlusIcon className="h-5 w-5" />Follow
           </span>
         </button>
       }
