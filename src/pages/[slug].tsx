@@ -108,7 +108,7 @@ const LikeFeed = (props: { userId: string }) => {
 
   if (isLoading) return <LoadingPage />
 
-  if (!data || data.length === 0) return <div>User has no likes yet.</div>
+  if (!data || data.length === 0) return <div className="p-3">User has no likes yet...</div>
 
   return <div className="flex flex-col">
     {transformedLikes?.map(fullPost => (<PostView {...fullPost} key={fullPost.post?.id} />
