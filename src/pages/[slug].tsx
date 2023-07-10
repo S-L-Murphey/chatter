@@ -26,24 +26,14 @@ const ProfileFeed = (props: { userId: string }) => {
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { user } = useUser();
-  const [postState, setPostState] = useState(true);
   const [likeState, setLikeState] = useState(false);
 
   const { data } = api.profile.getUserByUsername.useQuery({ username })
 
   if (!data) return <div>No data</div>
 
-  const handleTweetView = () => {
-    if (likeState) {
-      setLikeState(false)
-      setPostState(true)
-    }
-  };
-  const handleLikeView = () => {
-    if (postState) {
-      setLikeState(true)
-      setPostState(false)
-    }
+  const handleViewChange = () => {
+    setLikeState(!likeState);
   };
 
   return (
@@ -71,12 +61,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           }
         </div>
         <div className="flex justify-evenly py-2.5 text-white/70 font-bold">
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${postState ? 'underline' : ''}`} onClick={handleTweetView}>Tweets</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${likeState ? 'underline' : ''}`} onClick={handleViewChange}>Tweets</button>
 
-          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${!postState ? 'underline' : ''}`} onClick={handleLikeView}>Likes</button>
+          <button className={`hover:text-teal-500 hover:underline hover:font-extrabold transition-colors duration-200 ${!likeState ? 'underline' : ''}`} onClick={handleViewChange}>Likes</button>
         </div>
         <div className="w-full border-b border-slate-400" />
-        {postState ? <ProfileFeed userId={data.id} /> : <LikeFeed userId={data.id} />}
+        {likeState ? <ProfileFeed userId={data.id} /> : <LikeFeed userId={data.id} />}
       </PageLayout>
     </>
   );
