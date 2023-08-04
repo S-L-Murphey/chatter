@@ -105,6 +105,8 @@ const LikeFeed = (props: { userId: string }) => {
     author,
     post: like.post,
   }));
+  
+  console.log(transformedLikes)
 
   if (isLoading) return <LoadingPage />
 
